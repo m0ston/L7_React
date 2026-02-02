@@ -1,35 +1,120 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState('');
+  const [filter, setFilter] = useState('all');
+
+  // Добавить задачу
+  const addTodo = () => {
+    if (input.trim()) {
+      const newTodo = {
+        id: Date.now(),
+        text: input,
+        status: 'active',
+        date: new Date().toLocaleDateString()
+      };
+      setTodos([...todos, newTodo]);
+      setInput('');
+    }
+  };
+
+  // Удалить задачу
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
+
+  // Изменить статус
+  const toggleStatus = (id) => {
+    setTodos(todos.map(todo => 
+      todo.id === id 
+        ? { ...todo, status: todo.status === 'active' ? 'completed' : 'active' }
+        : todo
+    ));
+  };
+
+  // Фильтрация
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'active') return todo.status === 'active';
+    if (filter === 'completed') return todo.status === 'completed';
+    return true;
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <h1>📝 Мой To-Do List</h1>
+      
+      {/* Форма добавления */}
+      <div className="add-form">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Введите задачу..."
+          onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+        />
+        <button onClick={addTodo}>Добавить</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+
+      {/* Фильтры */}
+      <div className="filters">
+        <button 
+          className={filter === 'all' ? 'active' : ''}
+          onClick={() => setFilter('all')}
+        >
+          Все задачи
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <button 
+          className={filter === 'active' ? 'active' : ''}
+          onClick={() => setFilter('active')}
+        >
+          Активные
+        </button>
+        <button 
+          className={filter === 'completed' ? 'active' : ''}
+          onClick={() => setFilter('completed')}
+        >
+          Завершенные
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {/* Список задач */}
+      <div className="todo-list">
+        {filteredTodos.length === 0 ? (
+          <p>Нет задач</p>
+        ) : (
+          <ul>
+            {filteredTodos.map(todo => (
+              <li key={todo.id} className={`todo-item ${todo.status}`}>
+                <span 
+                  className="todo-text"
+                  onClick={() => toggleStatus(todo.id)}
+                >
+                  {todo.text}
+                </span>
+                <div className="todo-info">
+                  <span className="status">{todo.status === 'active' ? '🟢' : '✅'}</span>
+                  <span className="date">{todo.date}</span>
+                  <button 
+                    className="delete-btn"
+                    onClick={() => deleteTodo(todo.id)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Статистика */}
+      <div className="stats">
+        Всего: {todos.length} | Активных: {todos.filter(t => t.status === 'active').length}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
