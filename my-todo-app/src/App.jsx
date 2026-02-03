@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
       description: "Написать todo-лист с модальным окном",
       status: "Активная задача",
       priority: "Высокий",
-      date: "2024-12-10",
+      date: "10.12.2024",
       deadline: "2024-12-15"
     },
     {
@@ -19,7 +19,7 @@ function App() {
       description: "Молоко, хлеб, яйца",
       status: "Задача выполнена",
       priority: "Средний",
-      date: "2024-12-08",
+      date: "08.12.2024",
       deadline: "2024-12-09"
     },
   ];
@@ -27,6 +27,9 @@ function App() {
   const [todos, setTodos] = useState(initialTodos);
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null); // ID задачи в режиме редактирования
+  const [editingField, setEditingField] = useState(null); // Поле которое редактируем
+  const [editingValue, setEditingValue] = useState(""); // Значение для редактирования
   
   // Состояние для формы
   const [formData, setFormData] = useState({
@@ -36,6 +39,60 @@ function App() {
     priority: 'Средний',
     deadline: ''
   });
+
+  // Реф для отслеживания кликов вне поля редактирования
+  const editRef = useRef(null);
+
+  // Обработчик кликов вне поля редактирования
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (editRef.current && !editRef.current.contains(event.target)) {
+        saveEdit();
+      }
+    };
+
+    if (editingId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [editingId, editingField, editingValue]);
+
+  // Начать редактирование
+  const startEdit = (id, field, value) => {
+    setEditingId(id);
+    setEditingField(field);
+    setEditingValue(value);
+  };
+
+  // Сохранить изменения
+  const saveEdit = () => {
+    if (editingId === null || editingField === null) return;
+
+    // Валидация - нельзя сохранить пустое значение
+    if (!editingValue.trim()) {
+      alert(`Поле не может быть пустым!`);
+      cancelEdit();
+      return;
+    }
+
+    setTodos(todos.map(todo => 
+      todo.id === editingId 
+        ? { ...todo, [editingField]: editingValue }
+        : todo
+    ));
+
+    cancelEdit();
+  };
+
+  // Отменить редактирование
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingField(null);
+    setEditingValue("");
+  };
 
   // Обработчик изменения формы
   const handleInputChange = (e) => {
@@ -78,7 +135,9 @@ function App() {
 
   // Удалить задачу
   const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+    if (window.confirm('Вы уверены, что хотите удалить задачу?')) {
+      setTodos(todos.filter(todo => todo.id !== id));
+    }
   };
 
   // Фильтрация
@@ -87,6 +146,12 @@ function App() {
     if (filter === "completed") return todo.status === "Задача выполнена" || todo.status === "Задача отменена";
     return true;
   });
+
+  // Опции для статусов
+  const statusOptions = ["Активная задача", "Задача выполнена", "Задача отменена"];
+  
+  // Опции для приоритетов
+  const priorityOptions = ["Высокий", "Средний", "Низкий"];
 
   return (
     <div className="app">
@@ -148,27 +213,142 @@ function App() {
             ) : (
               filteredTodos.map(todo => (
                 <tr key={todo.id}>
-                  <td>{todo.title}</td>
-                  <td>{todo.description}</td>
-                  <td>
-                    <span className={`status-badge ${todo.status === 'Активная задача' ? 'active' : 'completed'}`}>
-                      {todo.status}
-                    </span>
+                  {/* Название */}
+                  <td 
+                    className="editable-cell"
+                    onClick={() => startEdit(todo.id, 'title', todo.title)}
+                  >
+                    {editingId === todo.id && editingField === 'title' ? (
+                      <div ref={editRef}>
+                        <input
+                          type="text"
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                          className="edit-input"
+                          autoFocus
+                        />
+                      </div>
+                    ) : (
+                      <span className="cell-content">{todo.title}</span>
+                    )}
                   </td>
-                  <td>
-                    <span className={`priority-badge ${todo.priority.toLowerCase()}`}>
-                      {todo.priority}
-                    </span>
+
+                  {/* Описание */}
+                  <td 
+                    className="editable-cell"
+                    onClick={() => startEdit(todo.id, 'description', todo.description)}
+                  >
+                    {editingId === todo.id && editingField === 'description' ? (
+                      <div ref={editRef}>
+                        <textarea
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={saveEdit}
+                          className="edit-textarea"
+                          autoFocus
+                        />
+                      </div>
+                    ) : (
+                      <span className="cell-content">{todo.description || '—'}</span>
+                    )}
                   </td>
+
+                  {/* Статус */}
+                  <td 
+                    className="editable-cell"
+                    onClick={() => startEdit(todo.id, 'status', todo.status)}
+                  >
+                    {editingId === todo.id && editingField === 'status' ? (
+                      <div ref={editRef}>
+                        <select
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={saveEdit}
+                          className="edit-select"
+                          autoFocus
+                        >
+                          {statusOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <span className={`status-badge ${todo.status === 'Активная задача' ? 'active' : 'completed'}`}>
+                        {todo.status}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Приоритет */}
+                  <td 
+                    className="editable-cell"
+                    onClick={() => startEdit(todo.id, 'priority', todo.priority)}
+                  >
+                    {editingId === todo.id && editingField === 'priority' ? (
+                      <div ref={editRef}>
+                        <select
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={saveEdit}
+                          className="edit-select"
+                          autoFocus
+                        >
+                          {priorityOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <span className={`priority-badge ${todo.priority.toLowerCase()}`}>
+                        {todo.priority}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Дата создания (не редактируется) */}
                   <td>{todo.date}</td>
-                  <td>{todo.deadline || '—'}</td>
+
+                  {/* Дедлайн */}
+                  <td 
+                    className="editable-cell"
+                    onClick={() => startEdit(todo.id, 'deadline', todo.deadline || '')}
+                  >
+                    {editingId === todo.id && editingField === 'deadline' ? (
+                      <div ref={editRef}>
+                        <input
+                          type="date"
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={saveEdit}
+                          className="edit-input"
+                          autoFocus
+                        />
+                      </div>
+                    ) : (
+                      <span className="cell-content">{todo.deadline ? new Date(todo.deadline).toLocaleDateString('ru-RU') : '—'}</span>
+                    )}
+                  </td>
+
+                  {/* Действия */}
                   <td>
-                    <button 
-                      className="delete-btn"
-                      onClick={() => deleteTodo(todo.id)}
-                    >
-                      Удалить
-                    </button>
+                    <div className="action-buttons">
+                      <button 
+                        className="delete-btn"
+                        onClick={() => deleteTodo(todo.id)}
+                      >
+                        Удалить
+                      </button>
+                      {editingId === todo.id && (
+                        <button 
+                          className="save-btn"
+                          onClick={saveEdit}
+                          style={{ marginLeft: '5px' }}
+                        >
+                          ✓
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -213,9 +393,9 @@ function App() {
                   value={formData.status}
                   onChange={handleInputChange}
                 >
-                  <option value="Активная задача">Активная задача</option>
-                  <option value="Задача выполнена">Задача выполнена</option>
-                  <option value="Задача отменена">Задача отменена</option>
+                  {statusOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
 
@@ -226,9 +406,9 @@ function App() {
                   value={formData.priority}
                   onChange={handleInputChange}
                 >
-                  <option value="Высокий">Высокий</option>
-                  <option value="Средний">Средний</option>
-                  <option value="Низкий">Низкий</option>
+                  {priorityOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -260,6 +440,11 @@ function App() {
         Всего задач: {todos.length} | 
         Активных: {todos.filter(t => t.status === "Активная задача").length} | 
         Завершенных: {todos.filter(t => t.status === "Задача выполнена" || t.status === "Задача отменена").length}
+      </div>
+
+      {/* Подсказка */}
+      <div className="hint">
+        💡 Подсказка: кликните на любую ячейку (кроме "Дата создания"), чтобы редактировать
       </div>
     </div>
   );
