@@ -1,4 +1,4 @@
-/* Базовые стили */
+
 * {
   margin: 0;
   padding: 0;
@@ -6,29 +6,32 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
 }
 
 .app {
   max-width: 1200px;
-  margin: 30px auto;
+  margin: 40px auto;
   padding: 30px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
 }
 
 h1 {
-  color: #333;
+  color: #5d4037; 
   text-align: center;
   margin-bottom: 30px;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 600;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f5e9e0; 
 }
 
-/* Шапка */
 .header-controls {
   display: flex;
   justify-content: flex-end;
@@ -36,53 +39,56 @@ h1 {
 }
 
 .add-btn {
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 12px 28px;
+  background-color: #e8b4b8; 
+  color: #5d4037;
   border: none;
-  border-radius: 50px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 8px rgba(232, 180, 184, 0.3);
 }
 
 .add-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background-color: #e0a2a7;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(232, 180, 184, 0.4);
 }
 
-/* Фильтры */
+
 .filters {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   margin-bottom: 30px;
-  background: #f8f9fa;
   padding: 15px;
+  background-color: #f9f5f1; 
   border-radius: 10px;
+  border: 1px solid #f0e6dd;
 }
 
 .filters button {
-  padding: 10px 25px;
+  padding: 10px 24px;
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #e8d6cb;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s;
+  transition: all 0.2s;
   flex: 1;
+  color: #5d4037;
+}
+
+.filters button:hover {
+  border-color: #e8b4b8;
+  background-color: #fdf8f5;
 }
 
 .filters button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #e8b4b8; 
   color: white;
-  border-color: transparent;
-}
-
-.filters button:hover:not(.active) {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #e8b4b8;
 }
 
 /* Таблица */
@@ -90,7 +96,8 @@ h1 {
   overflow-x: auto;
   margin-bottom: 30px;
   border-radius: 10px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #eaeaea;
+  background: white;
 }
 
 .todo-table {
@@ -100,24 +107,25 @@ h1 {
 }
 
 .todo-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: #f5e9e0; 
+  border-bottom: 2px solid #e8d6cb;
 }
 
 .todo-table th {
   padding: 18px 15px;
   text-align: left;
-  font-weight: 500;
+  font-weight: 600;
+  color: #5d4037;
   font-size: 15px;
 }
 
 .todo-table tbody tr {
   border-bottom: 1px solid #f0f0f0;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .todo-table tbody tr:hover {
-  background: #f9f9ff;
+  background-color: #fdf8f5; 
 }
 
 .todo-table td {
@@ -126,67 +134,78 @@ h1 {
   vertical-align: top;
 }
 
-/* Бейджи статусов */
 .status-badge {
   display: inline-block;
-  padding: 6px 15px;
+  padding: 6px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
+  min-width: 120px;
+  text-align: center;
 }
 
 .status-badge.active {
-  background: rgba(46, 204, 113, 0.1);
-  color: #27ae60;
+  background: rgba(244, 67, 54, 0.1); 
+  color: #d32f2f;
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
 .status-badge.completed {
-  background: rgba(52, 152, 219, 0.1);
-  color: #2980b9;
+  background: rgba(76, 175, 80, 0.1); 
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-/* Бейджи приоритетов */
+.status-badge.cancelled {
+  background: rgba(255, 152, 0, 0.1); 
+  color: #ef6c00;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
 .priority-badge {
   display: inline-block;
-  padding: 6px 15px;
+  padding: 6px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
+  min-width: 80px;
+  text-align: center;
 }
 
 .priority-badge.высокий {
-  background: rgba(231, 76, 60, 0.1);
-  color: #c0392b;
+  background: rgba(244, 67, 54, 0.1);
+  color: #d32f2f;
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
 .priority-badge.средний {
-  background: rgba(241, 196, 15, 0.1);
-  color: #f39c12;
+  background: rgba(255, 193, 7, 0.1);
+  color: #f57c00;
+  border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
 .priority-badge.низкий {
-  background: rgba(46, 204, 113, 0.1);
-  color: #27ae60;
+  background: rgba(76, 175, 80, 0.1);
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-/* Кнопка удаления */
 .delete-btn {
   padding: 8px 20px;
-  background: #ff6b6b;
-  color: white;
+  background: #f8d7da;
+  color: #721c24;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  border: 1px solid #f5c6cb;
 }
 
 .delete-btn:hover {
-  background: #ff4757;
-  transform: scale(1.05);
+  background: #f1b0b7;
 }
 
-/* Модальное окно */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -198,45 +217,33 @@ h1 {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(5px);
 }
 
 .modal-content {
   background: white;
-  padding: 40px;
-  border-radius: 20px;
+  padding: 35px;
+  border-radius: 12px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-  animation: modalAppear 0.3s ease-out;
-}
-
-@keyframes modalAppear {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid #eaeaea;
 }
 
 .modal-content h2 {
-  color: #333;
-  margin-bottom: 30px;
+  color: #5d4037;
+  margin-bottom: 25px;
   text-align: center;
+  font-size: 24px;
 }
 
-/* Форма */
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #555;
+  color: #5d4037;
   font-weight: 500;
   font-size: 14px;
 }
@@ -246,18 +253,20 @@ h1 {
 .form-group textarea {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
+  border: 1px solid #e8d6cb;
+  border-radius: 8px;
   font-size: 15px;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s;
   font-family: inherit;
+  background: white;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #e8b4b8;
+  box-shadow: 0 0 0 3px rgba(232, 180, 184, 0.1);
 }
 
 .form-row {
@@ -266,23 +275,22 @@ h1 {
   gap: 20px;
 }
 
-/* Кнопки модалки */
 .modal-actions {
   display: flex;
   gap: 15px;
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 .cancel-btn {
   flex: 1;
-  padding: 14px;
+  padding: 13px;
   background: #f8f9fa;
   color: #666;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .cancel-btn:hover {
@@ -292,35 +300,111 @@ h1 {
 
 .submit-btn {
   flex: 1;
-  padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 13px;
+  background: #e8b4b8; 
+  color: #5d4037;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  background: #e0a2a7;
 }
 
-/* Статистика */
 .stats {
   text-align: center;
   color: #777;
   font-size: 14px;
   padding-top: 20px;
   border-top: 1px solid #eee;
+  margin-top: 10px;
 }
 
-/* Адаптивность */
+.hint {
+  text-align: center;
+  margin-top: 20px;
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
+  padding: 10px;
+  background: #f9f5f1;
+  border-radius: 8px;
+  border: 1px dashed #e8d6cb;
+}
+
+.editable-cell {
+  position: relative;
+  cursor: pointer;
+  min-height: 60px;
+  padding: 8px !important;
+}
+
+.editable-cell:hover {
+  background-color: #f9f5f1 !important;
+}
+
+.cell-content {
+  display: block;
+  padding: 10px 5px;
+}
+
+.edit-input,
+.edit-textarea,
+.edit-select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #e8b4b8;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  box-shadow: 0 2px 8px rgba(232, 180, 184, 0.2);
+}
+
+.edit-input:focus,
+.edit-textarea:focus,
+.edit-select:focus {
+  outline: none;
+  border-color: #d88a8f;
+}
+
+.edit-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.edit-select {
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.save-btn {
+  padding: 8px 15px;
+  background: #d4edda;
+  color: #155724;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: 1px solid #c3e6cb;
+}
+
+.save-btn:hover {
+  background: #c1e5c9;
+}
+
 @media (max-width: 768px) {
   .app {
-    margin: 15px;
+    margin: 20px;
     padding: 20px;
   }
 
@@ -355,5 +439,9 @@ h1 {
   
   .modal-actions {
     flex-direction: column;
+  }
+  
+  h1 {
+    font-size: 26px;
   }
 }
